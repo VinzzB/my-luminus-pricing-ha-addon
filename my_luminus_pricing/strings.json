@@ -1,0 +1,65 @@
+{
+  "config": {
+    "title": "My Luminus Configuration",
+    "abort": {
+      "already_configured": "Device is already configured",
+      "reconfigure_successful": "Reconfiguration successful",
+      "already_in_progress": "A setup is already in progress for this integration"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "invalid_settings": "Invalid settings",
+      "unknown": "Unexpected error"
+    },
+    "step": {
+      "user": {
+        "title": "My Luminus - Add device",
+        "data": {          
+          "password": "Password",
+          "username": "Username"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "password": "Password",
+          "username": "Username"
+        }
+      }
+    }
+  }, 
+  "entity": {
+	"sensor": {
+	  "product_name": { 
+		"name": "Name of product" 
+	  },
+	  "dualDay": { 
+		"name": "Dual day" 
+	  },
+	  "dualNight": { 
+		"name": "Dual night" 
+	  },
+	  "exclusiveNight": { 
+		"name": "Exclusive night" 
+	  },
+	  "fixed": { 
+		"name": "Fixed" 
+	  },
+	  "injectionDualDay": { 
+		"name": "Injection dual day" 
+	  },
+	  "injectionDualNight": { 
+		"name": "Injection dual night" 
+	  },
+	  "injectionSingle": { 
+		"name": "Injection single" 
+	  },
+	  "single": { 
+		"name": "Single" 
+	  },
+	  "singleDay": { 
+		"name": "Single day" 
+	  }
+	}
+  }
+}

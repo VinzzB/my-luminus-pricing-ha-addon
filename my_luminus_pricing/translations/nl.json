@@ -1,0 +1,65 @@
+{
+  "config": {
+    "title": "My Luminus Configuratie",
+    "abort": {
+      "already_configured": "Apparaat is reeds geconfigureerd",
+      "reconfigure_successful": "Herconfiguratie voltooid",
+      "already_in_progress": "De installatieprocedure is reeds opgestart"
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken",
+      "invalid_auth": "Authenticatie mislukt",
+      "invalid_settings": "Ongeldige configuratie",
+      "unknown": "Onbehandelde fout"
+    },
+    "step": {
+      "user": {
+        "title": "My Luminus - apparaat toevoegen",
+        "data": {          
+          "password": "Wachtwoord",
+          "username": "Gebruikersnaam (e-mail)"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "password": "Wachtwoord",
+          "username": "Gebruikersnaam (e-mail)"
+        }
+      }
+    }
+  }, 
+  "entity": {
+	"sensor": {
+	  "product_name": { 
+		"name": "Productnaam" 
+	  },
+	  "dualDay": { 
+		"name": "Tweevoudige meter dag" 
+	  },
+	  "dualNight": { 
+		"name": "Tweevoudige meter nacht" 
+	  },
+	  "exclusiveNight": { 
+		"name": "Exclusief nachtmeter" 
+	  },
+	  "fixed": { 
+		"name": "Vaste vergoeding" 
+	  },
+	  "injectionDualDay": { 
+		"name": "Vergoeding geïnjecteerde energie dag" 
+	  },
+	  "injectionDualNight": { 
+		"name": "Vergoeding geïnjecteerde energie nacht" 
+	  },
+	  "injectionSingle": { 
+		"name": "Vergoeding geïnjecteerde energie" 
+	  },
+	  "single": { 
+		"name": "Enkelvoudige meter" 
+	  },
+	  "singleDay": { 
+		"name": "Enkelvoudige meter dag" 
+	  }
+	}
+  }
+}
