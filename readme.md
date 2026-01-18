@@ -8,7 +8,7 @@
 This library is provided without any warranty or support by Luminus. I do not take responsibility for any problems it may cause in all cases. Use it at your own risk.
 
 ## Installation
-1. Unpack files to HA /homeassistant/custom_components/
+1. Unpack files to HA /homeassistant/ folder
 2. Restart HA
 3. Add "My Luminus - Pricing" integration in UI.
 4. Enter your My Luminus username and password.
