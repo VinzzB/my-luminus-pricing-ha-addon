@@ -42,6 +42,26 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     }
 )
 
+STEP_SETTINGS_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_SENSORS): selector(
+            {"entity": {"filter": {"integration": "sun"}}}
+        ),
+        # Take note of translation key and entry in strings.json and translation files.
+        vol.Required(CONF_CHOOSE): selector(
+            {
+                "select": {
+                    "options": ["all", "light", "switch"],
+                    "mode": "dropdown",
+                    "translation_key": "example_selector",
+                }
+            }
+        ),
+        vol.Required(CONF_MINIMUM): selector({"number": {"min": 0, "max": 100}}),
+    }
+)
+
+
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect.
 
@@ -66,11 +86,15 @@ async def validate_settings(hass: HomeAssistant, data: dict[str, Any]) -> bool:
     """Another validation method for our config steps."""
     return True
 
+async def validate_account(hass: HomeAssistant, data: dict[str, Any]) -> bool:
+    """Another validation method for our config steps."""
+    return True
+
 
 class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Example Integration."""
 
-    VERSION = 1
+    VERSION = 2
     _input_data: dict[str, Any]
     _title: str
 
@@ -121,7 +145,8 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
                 # ----------------------------------------------------------------------------
                 self._input_data = user_input
 
-                # Call the next step                
+                # Call the next step  
+                #return await self.async_step_account()
                 return self.async_create_entry(title=self._title, data=self._input_data)
 
         # Show initial form.
@@ -132,7 +157,46 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
             last_step=True,  # Adding last_step True/False decides whether form shows Next or Submit buttons
         )
+    
+    async def async_step_account(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        errors: dict[str, str] = {}
 
+        if user_input is not None:
+            # The form has been filled in and submitted, so process the data provided.
+            if not await validate_account(self.hass, user_input):
+                errors["base"] = "invalid_account"
+
+            if "base" not in errors:
+                # ----------------------------------------------------------------------------
+                # Validation was successful, so create the config entry.
+                # ----------------------------------------------------------------------------
+                self._input_data.update(user_input)
+                _LOGGER.warning("step account - user_input %s", user_input)
+                return self.async_create_entry(title=self._title, data=self._input_data)
+        
+        
+        # ----------------------------------------------------------------------------
+        # Show settings form.  The step id always needs to match the bit after async_step_ in your method.
+        # Set last_step to True here if it is last step.
+        # ----------------------------------------------------------------------------
+        return self.async_show_form(
+            step_id="account",
+            data_schema=STEP_SETTINGS_DATA_SCHEMA,
+            errors=errors,
+            last_step=True,
+        )      
+        
+        # vol.Schema({
+                    # vol.Required(CONF_CHOOSE): selector({
+                    # "options": ["all", "light", "switch"],
+                    # "mode": "dropdown",
+                    # "translation_key": "example_selector",
+                    # })
+                # })
+        
+    
     async def async_step_reconfigure(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:

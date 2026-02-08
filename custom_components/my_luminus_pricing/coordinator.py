@@ -64,27 +64,35 @@ class LuminusCoordinator(DataUpdateCoordinator):
             # ----------------------------------------------------------------------------
             
             await self.hass.async_add_executor_job(self.api.login)
-            meters = await self.hass.async_add_executor_job(self.api.get_meters)
-            data = []
-            for meter in meters['meters']:
-                eanNr = meter['ean']
-                energyType = meter['energyType']
-                meterDetails = await self.hass.async_add_executor_job(self.api.get_meter, eanNr)
-                if not meterDetails is None:
-                    pname = meterDetails['productName']
-                    prices = meterDetails['prices']
-                    meterType = meterDetails['activeMeterType']
-                    meterPrices = prices[meterType]
-                    device = {
-                        'device_id': eanNr,
-                        'device_name': pname + ' (' + eanNr + ')',
-                        'device_type': energyType,
-                        'product_name': pname
-                    }
-                    data.append(device)
-                    for propName, price in meterPrices.items():
-                        device[propName] = price['rate'] / (1 if propName == 'fixed' else 100)
-                    
+            _LOGGER.warning("get accounts...")
+            accounts = await self.hass.async_add_executor_job(self.api.get_accounts)
+            for account in accounts['businessPartners']:
+                _LOGGER.warning("switch accounts to %s...", account['businessPartnerNumber'])
+                await self.hass.async_add_executor_job(self.api.switch_account, account['businessPartnerNumber'])
+                _LOGGER.warning("get meters...")
+                meters = await self.hass.async_add_executor_job(self.api.get_meters)
+                contracts = await self.hass.async_add_executor_job(self.api.get_active_contracts)
+                data = []
+                for meter in meters['meters']:
+                    eanNr = meter['ean']
+                    energyType = meter['energyType']
+                    _LOGGER.warning("get meter pricedata...")
+                    meterDetails = await self.hass.async_add_executor_job(self.api.get_meter, eanNr)
+                    if not meterDetails is None:
+                        pname = meterDetails['productName']
+                        prices = meterDetails['prices']
+                        meterType = meterDetails['activeMeterType']
+                        meterPrices = prices[meterType]
+                        device = {
+                            'device_id': eanNr,
+                            'device_name': pname + ' (' + eanNr + ')',
+                            'device_type': energyType,
+                            'product_name': pname
+                        }
+                        data.append(device)
+                        for propName, price in meterPrices.items():
+                            device[propName] = price['rate'] / (1 if propName == 'fixed' else 100)
+                        
             #await self.hass.async_add_executor_job(self.api.logout)
             _LOGGER.info('Data updated.')
             #_LOGGER.warning('updated coordinator data', data)  

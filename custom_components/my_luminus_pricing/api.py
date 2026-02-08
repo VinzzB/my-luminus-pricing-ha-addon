@@ -16,6 +16,19 @@ _LOGGER = logging.getLogger(__name__)
 MOCK_EAN_ELECTRICITY = "000000000123456789"
 MOCK_EAN_GAS = "123456789000000000"
 
+MOCK_DATA_ACCOUNTS = {
+    "id":"01234567-abcd-0000-dcba-001234567890",
+    "email":"me@example.com",
+    "activeBusinessPartnerNumber":"123456789",
+    "businessPartners":[
+        {"businessPartnerNumber":"123456789","pushNotificationsEnabled":False}
+    ],
+    "socialNetworks":{"facebook":False,"google":False,"apple":False}
+}
+
+# ,
+        # {"businessPartnerNumber":"987654321","pushNotificationsEnabled":False}
+
 MOCK_DATA_METERS = {
     'meters': [{
             'ean': MOCK_EAN_ELECTRICITY, 
@@ -28,6 +41,73 @@ MOCK_DATA_METERS = {
         }
     ]
 }
+
+MOCK_DATA_ACTIVE_CONTRACTS = [
+    {
+        "id": "fdsffsdffsdfsf",
+        "energyType": "Electricity",
+        "ean": MOCK_EAN_ELECTRICITY,
+        "street": "ACHTBAAN",
+        "houseNr": "8",
+        "box": "",
+        "postalCode": "1000",
+        "city": "BRUSSEL",
+        "region": "Brussel",
+        "product": "Luminus BasicFlex Online Elektriciteit",
+        "productId": "a1p0800000CEbf3AAD",
+        "priceVariability": "Variable",
+        "serviceLevel": "NotSpecified",
+        "readingType": "Monthly",
+        "changeProductAllowed": True,
+        "priceInfoAvailable": True,
+        "hasMetering": True,
+        "hasBudgetBilling": False,
+        "hasDigitalMeter": True,
+        "paymentMethod": "DirectDebit",
+        "directDebitSubscription": "AllInvoices",
+        "hasZoomit": False,
+        "bankAccount": "BE01234567890123",
+        "refundBankAccount": "BE01234567890123",
+        "canRequestMonthlyBilling": False,
+        "priceListPdfAvailable": False,
+        "contractPdfAvailable": False,
+        "canRequestTariffImpact": False,
+        "hasSeasonalProduct": False,
+        "digitalMeterType": "SMR1"
+    }, {
+        "id": "vdsgdfhgj",
+        "energyType": "Gas",
+        "ean": MOCK_EAN_GAS,
+        "street": "ACHTBAAN",
+        "houseNr": "8",
+        "box": "",
+        "postalCode": "1000",
+        "city": "BRUSSEL",
+        "region": "Brussel",
+        "product": "Luminus BasicFlex Online Gas",
+        "productId": "a1p0800000CEbfNAAT",
+        "priceVariability": "Variable",
+        "serviceLevel": "NotSpecified",
+        "readingType": "Monthly",
+        "changeProductAllowed": True,
+        "priceInfoAvailable": True,
+        "hasMetering": True,
+        "hasBudgetBilling": False,
+        "hasDigitalMeter": True,
+        "paymentMethod": "DirectDebit",
+        "directDebitSubscription": "AllInvoices",
+        "hasZoomit": False,
+        "bankAccount": "BE01234567890123",
+        "refundBankAccount": "BE01234567890123",
+        "canRequestMonthlyBilling": False,
+        "priceListPdfAvailable": False,
+        "contractPdfAvailable": False,
+        "canRequestTariffImpact": False,
+        "hasSeasonalProduct": False,
+        "digitalMeterType": "SMR1"
+    }
+]
+
 
 MOCK_DATA = {
     MOCK_EAN_ELECTRICITY: {
@@ -97,13 +177,49 @@ class API:
         self.mock = mock
         self.mock_data = deepcopy(MOCK_DATA)
         self.mock_data_meters = deepcopy(MOCK_DATA_METERS)        
+        self.mock_data_accounts = deepcopy(MOCK_DATA_ACCOUNTS)
+        self.mock_data_active_contracts = deepcopy(MOCK_DATA_ACTIVE_CONTRACTS)
         self.isLoggedIn = False        
+    
+    def get_accounts(self) -> list[dict[str, Any]]:
+        if self.mock:
+            return self.mock_data_accounts
+        return self.get_data('https://www.luminus.be/myluminus/api/account/overview')
 
     def get_meters(self) -> list[dict[str, Any]]:
         if self.mock:
-            return self.mock_data_meters;
+            return self.mock_data_meters
         return self.get_data('https://www.luminus.be/myluminus/api/meter-readings/available-sources')
+
+    def get_active_contracts(self) -> list[dict[str, Any]]:
+        if self.mock:
+            return self.mock_data_active_contracts
+        return self.get_data('https://www.luminus.be/myluminus/api/active-contracts') #test multi-account req call?
         
+    def switch_account(self, accountId: str) -> bool:
+        
+        if self.mock:
+            return True;
+        
+        switchAccountReqBody = { 
+            'bp': accountId
+        }  
+        
+        switchAccountReq = self.session.post('https://www.luminus.be/myluminus/api/account/active-business-partner', json=switchAccountReqBody, timeout=HTTP_TIMEOUT)
+                
+        if(switchAccountReq.status_code != requests.codes.ok):
+            _LOGGER.error("Luminus - Switch account error %s %s", switchAccountReq.status_code, switchAccountReq.text)
+            raise APIAuthError()
+        
+        switchAccountRsp = switchAccountReq.json()
+        if(not switchAccountRsp['ok']):
+            _LOGGER.error("Luminus - Account NOT switched to %s", accountId)
+            return False        
+        _LOGGER.debug("Luminus - Account switched to %s", accountId)
+        
+        customerReq = self.get_data('https://www.luminus.be/myluminus/api/customer') #test multi-account req call?
+        return True
+    
     def get_meter(self, ean: str) -> list[dict[str, Any]]:
         if self.mock:
             return self.mock_data[ean]
@@ -118,23 +234,22 @@ class API:
                 r = self.session.get(url, timeout=HTTP_TIMEOUT, allow_redirects=False)
                 
             if(r.status_code != requests.codes.ok):
-                _LOGGER.warning("Luminus response error", r.url, r.status_code, r.text)
+                _LOGGER.error("Luminus response error %s %s %s", r.url, r.status_code, r.text)
                 self.isLoggedIn = False
-                raise APIConnectionError("Error connecting to api")
+                raise APIConnectionError("Error connecting to api " + url)
             return r.json()
         except requests.exceptions.ConnectTimeout as err:
-            raise APIConnectionError("Timeout connecting to api") from err
+            raise APIConnectionError("Timeout connecting to api " + url) from err
         except Exception as err:
             raise APIConnectionError(err)
         
     def login(self):
         
         if self.mock or self.isLoggedIn:
-        #if self.mock:
             return
             
         _LOGGER.debug('Luminus Login called!')
-        r = self.session.get(f"https://www.luminus.be/myluminus/nl/", timeout=30)
+        r = self.session.get(f"https://www.luminus.be/myluminus/nl/", timeout=HTTP_TIMEOUT)
         u = urlparse(r.history[-1].headers['location'])
         q = parse_qs(u.query)
         s = q['state'][0]
@@ -153,7 +268,7 @@ class API:
             'webauthn-platform-available' : 'false', 
             'action': 'default' 
         }
-        idReq = self.session.post('https://login.luminus.be/u/login/identifier', params=authUriQry, data=idReqBody, timeout=30, headers=idHeaders)
+        idReq = self.session.post('https://login.luminus.be/u/login/identifier', params=authUriQry, data=idReqBody, timeout=HTTP_TIMEOUT, headers=idHeaders)
         if(idReq.status_code != requests.codes.ok):
             raise APIAuthError()
             
@@ -167,11 +282,11 @@ class API:
             'password': self.pwd,
             'action': 'default' 
         }
-        authReq = self.session.post('https://login.luminus.be/u/login/password', params=authUriQry, data=authReqBody, timeout=30, headers=authHeaders)       
+        authReq = self.session.post('https://login.luminus.be/u/login/password', params=authUriQry, data=authReqBody, timeout=HTTP_TIMEOUT, headers=authHeaders)       
         self.isLoggedIn = authReq.status_code == requests.codes.ok
         if(authReq.status_code != requests.codes.ok):
             raise APIAuthError()
-            
+        
         _LOGGER.info('Luminus logged in!')
 
     def logout(self):
