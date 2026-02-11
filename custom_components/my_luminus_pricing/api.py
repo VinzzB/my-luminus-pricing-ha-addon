@@ -286,7 +286,9 @@ class API:
         self.isLoggedIn = authReq.status_code == requests.codes.ok
         if(authReq.status_code != requests.codes.ok):
             raise APIAuthError()
-        
+            
+        meReq = self.session.get('https://www.luminus.be/myluminus/api/auth/me', timeout=HTTP_TIMEOUT)    
+        meRsp = meReq.json()
         _LOGGER.info('Luminus logged in!')
 
     def logout(self):
