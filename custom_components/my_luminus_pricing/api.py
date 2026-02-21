@@ -287,8 +287,13 @@ class API:
         if(authReq.status_code != requests.codes.ok):
             raise APIAuthError()
             
-        meReq = self.session.get('https://www.luminus.be/myluminus/api/auth/me', timeout=HTTP_TIMEOUT)    
-        meRsp = meReq.json()
+        customerReq = self.session.get('https://www.luminus.be/myluminus/api/customer', timeout=HTTP_TIMEOUT) #test multi-account req call?
+        if(customerReq.status_code != requests.codes.ok):
+            _LOGGER.warning("error on customer call. code: %s. Response: %s", customerReq.status_code, customerReq.text)
+            raise APIAuthError()
+            
+        #meReq = self.session.get('https://www.luminus.be/myluminus/api/auth/me', timeout=HTTP_TIMEOUT)    
+        #meRsp = meReq.json()
         _LOGGER.info('Luminus logged in!')
 
     def logout(self):
