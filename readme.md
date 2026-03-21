@@ -8,6 +8,15 @@
 This library is provided without any warranty or support by Luminus. I do not take responsibility for any problems it may cause in all cases. Use it at your own risk.
 
 ## Installation
+Using Hacs "Custom Repositories":
+1. Add this repository as a custom repository in HACS (https://hacs.xyz/docs/faq/custom_repositories/)
+2. Install My Luminus Pricing
+3. Restart HA
+4. Add "My Luminus - Pricing" integration in UI.
+5. Enter your My Luminus username and password.
+6. Assign EAN devices to areas
+
+Manual:
 1. Unpack files to HA /homeassistant/ folder
 2. Restart HA
 3. Add "My Luminus - Pricing" integration in UI.
