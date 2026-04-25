@@ -69,7 +69,7 @@ class LuminusBaseSensor(LuminusBaseEntity, SensorEntity):
 
 class YearlyPriceSensor(LuminusBaseSensor):
 
-    _attr_state_class  = SensorStateClass.MEASUREMENT
+    _attr_state_class  = SensorStateClass.TOTAL
     _attr_device_class = SensorDeviceClass.MONETARY
     _attr_native_unit_of_measurement = 'EUR/year'
     _attr_suggested_display_precision = 2
@@ -77,7 +77,7 @@ class YearlyPriceSensor(LuminusBaseSensor):
 
 class EnergyPriceSensor(LuminusBaseSensor):
 
-    _attr_state_class  = SensorStateClass.MEASUREMENT
+    _attr_state_class  = SensorStateClass.TOTAL
     _attr_device_class = SensorDeviceClass.MONETARY
     _attr_native_unit_of_measurement = 'EUR/kWh'
     _attr_suggested_display_precision = 4
