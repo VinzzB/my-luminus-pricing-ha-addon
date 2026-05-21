@@ -15,12 +15,17 @@ _LOGGER = logging.getLogger(__name__)
 
 MOCK_EAN_ELECTRICITY = "000000000123456789"
 MOCK_EAN_GAS = "123456789000000000"
+MOCK_EAN_SEASONAL_ELECTRICITY = "000000000987654321"
 
 MOCK_DATA_METERS = {
     'meters': [{
             'ean': MOCK_EAN_ELECTRICITY, 
             'energyType': 'Electricity', 
             'sources': [{'sourceProvider': 'SAP'}, {'sourceProvider': 'BasicMonitoring', 'status': 'Eligible'}]
+        },{
+            'ean': MOCK_EAN_ELECTRICITY, 
+            'energyType': 'Electricity (Seasonal)',
+            'sources': [{'sourceProvider': 'SAP'}, {'sourceProvider': 'BasicMonitoring', 'status': 'NonEligible'}]
         }, {
             'ean': MOCK_EAN_GAS, 
             'energyType': 'Gas', 
@@ -62,6 +67,56 @@ MOCK_DATA = {
                 "injectionDualNight":{"rate":1.12,"formula":"0.0004144 x Belpex M INJ [65.33] - 0.0159"}
             }
         },"promotionsContent":[]
+    },
+    MOCK_EAN_SEASONAL_ELECTRICITY: {
+        "productName": "Luminus SmartFlex Electricité",
+        "disclaimer": "Si en raison d’un problème technique, votre compteur ne communique plus les données nécessaires pour SmartFlex, nous appliquons le prix MaxxFlex comme prévu dans les conditions.",
+        "activeMeterType": "dual",
+        "seasonalPrices": {
+            "fixed": {"rate": 65},
+            "peak": {"rate": 13.66, "formula": "0.0013 x Belpex M [78.94] + 0.0262"},
+            "offPeak": {"rate": 11.73, "formula": "0.00108 x Belpex M [78.94] + 0.0254"},
+            "superOffPeak": {"rate": 6.12, "formula": "0.00041 x Belpex M [78.94] + 0.0254"},
+            "injectionPeak": {"rate": 3.16, "formula": "0.0004807 x Belpex M INJ [78.94] - 0.0063923"},
+            "injectionOffPeak": {"rate": 3.16, "formula": "0.0004807 x Belpex M INJ [78.94] - 0.0063923"},
+            "injectionSuperOffPeak": {"rate": 3.16, "formula": "0.0004807 x Belpex M INJ [78.94] - 0.0063923"},
+        },
+        "promotionsContent": [
+            [
+                {
+                    "_key": "000000000001",
+                    "_type": "block",
+                    "children": [
+                        {
+                            "_key": "22794723d7d9",
+                            "_type": "span",
+                            "marks": [],
+                            "text": "Happy Sunday : La première année, Luminus rend l'électricité totalement gratuite chaque dimanche de 11 h à 17 h au printemps et en été du 21/3 au 20/9 inclus ! Vous payez toutefois toujours les coûts d'utilisation au gestionnaire de réseau ainsi que les taxes à l'État.",
+                        }
+                    ],
+                    "markDefs": [],
+                    "style": "normal",
+                }
+            ],
+            [
+                {
+                    "_key": "000000000002",
+                    "_type": "block",
+                    "children": [
+                        {"_key": "203a788bbf6f", "_type": "span", "marks": [], "text": "Remise unique de"},
+                        {"_key": "4b9edeaac7d8", "_type": "span", "marks": ["strong"], "text": " 20,00 €"},
+                        {
+                            "_key": "37fa2636287e",
+                            "_type": "span",
+                            "marks": [],
+                            "text": " (6 % TVA incl.) en cas de paiement par domiciliation. Si vous êtes client chez nous pour l’électricité et le gaz, cette réduction n’est appliquée qu’une seule fois.",
+                        },
+                    ],
+                    "markDefs": [],
+                    "style": "normal",
+                }
+            ],
+        ],
     },
     MOCK_EAN_GAS: {
         "productName":"Luminus Gas",
