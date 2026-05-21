@@ -67,22 +67,28 @@ class LuminusCoordinator(DataUpdateCoordinator):
             meters = await self.hass.async_add_executor_job(self.api.get_meters)
             data = []
             for meter in meters['meters']:
-                eanNr = meter['ean']
-                energyType = meter['energyType']
-                meterDetails = await self.hass.async_add_executor_job(self.api.get_meter, eanNr)
-                if not meterDetails is None:
-                    pname = meterDetails['productName']
-                    prices = meterDetails['prices']
-                    meterType = meterDetails['activeMeterType']
-                    meterPrices = prices[meterType]
+                ean_nbr = meter['ean']
+                energy_type = meter['energyType']
+                meter_details = await self.hass.async_add_executor_job(self.api.get_meter, ean_nbr)
+                if not meter_details is None:
+                    seasonal_prices = meter_details.get('seasonalPrices', {})
+                    prices = meter_details.get('prices', {})
+                    product_name = meter_details['productName']
+                    
+                    if seasonal_prices:
+                        meter_prices = seasonal_prices
+                    else:
+                        meterType = meter_details['activeMeterType']
+                        meter_prices = prices[meterType]
+                    
                     device = {
-                        'device_id': eanNr,
-                        'device_name': pname + ' (' + eanNr + ')',
-                        'device_type': energyType,
-                        'product_name': pname
+                        'device_id': ean_nbr,
+                        'device_name': f'{product_name} ({ean_nbr})',
+                        'device_type': energy_type,
+                        'product_name': product_name
                     }
                     data.append(device)
-                    for propName, price in meterPrices.items():
+                    for propName, price in meter_prices.items():
                         device[propName] = price['rate'] / (1 if propName == 'fixed' else 100)
                     
             #await self.hass.async_add_executor_job(self.api.logout)
