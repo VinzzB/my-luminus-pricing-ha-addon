@@ -167,12 +167,19 @@ class API:
             'password': self.pwd,
             'action': 'default' 
         }
-        authReq = self.session.post('https://login.luminus.be/u/login/password', params=authUriQry, data=authReqBody, timeout=30, headers=authHeaders)       
-        self.isLoggedIn = authReq.status_code == requests.codes.ok
-        if(authReq.status_code != requests.codes.ok):
+        # A successful POST login request can  result in a 500 statuscode when redirecting to https://www.luminus.be/myluminus/nl. Check account overview for login state.
+        authReq = self.session.post('https://login.luminus.be/u/login/password', params=authUriQry, data=authReqBody, timeout=30, headers=authHeaders)
+        
+        overviewReq = self.session.get('https://www.luminus.be/myluminus/api/account/overview')
+        
+        self.isLoggedIn = overviewReq.status_code == requests.codes.ok
+        if(overviewReq.status_code != requests.codes.ok):
             raise APIAuthError()
             
+        
+        #_LOGGER.info("Get Overview accounts", overviewReq.status_code, overviewReq.text)
         _LOGGER.info('Luminus logged in!')
+
 
     def logout(self):
 
