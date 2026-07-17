@@ -1,0 +1,83 @@
+{
+	"config": {
+		"title": "Configuration My Luminus",
+		"abort": {
+			"already_configured": "L'appareil est déjà configuré",
+			"reconfigure_successful": "Reconfiguration réussie",
+			"already_in_progress": "Une configuration est déjà en cours pour cette intégration"
+		},
+		"error": {
+			"cannot_connect": "Échec de la connexion",
+			"invalid_auth": "Authentification invalide",
+			"invalid_settings": "Paramètres invalides",
+			"unknown": "Erreur inattendue"
+		},
+		"step": {
+			"user": {
+				"title": "My Luminus - Ajouter un appareil",
+				"data": {
+					"password": "Mot de passe",
+					"username": "Nom d'utilisateur (e-mail)"
+				}
+			},
+			"reconfigure": {
+				"data": {
+					"password": "Mot de passe",
+					"username": "Nom d'utilisateur (e-mail)"
+				}
+			}
+		}
+	},
+	"entity": {
+		"sensor": {
+			"product_name": {
+				"name": "Nom du produit"
+			},
+			"dualDay": {
+				"name": "Compteur bihoraire jour"
+			},
+			"dualNight": {
+				"name": "Compteur bihoraire nuit"
+			},
+			"exclusiveNight": {
+				"name": "Compteur exclusif nuit"
+			},
+			"fixed": {
+				"name": "Redevance fixe"
+			},
+			"peak": {
+				"name": "Heures pleines"
+			},
+			"offPeak": {
+				"name": "Heures creuses"
+			},
+			"superOffPeak": {
+				"name": "Super heures creuses"
+			},
+			"injectionPeak": {
+				"name": "Compensation d'injection heures pleines"
+			},
+			"injectionOffPeak": {
+				"name": "Compensation d'injection heures creuses"
+			},
+			"injectionSuperOffPeak": {
+				"name": "Compensation d'injection super heures creuses"
+			},
+			"injectionDualDay": {
+				"name": "Compensation d'injection bihoraire jour"
+			},
+			"injectionDualNight": {
+				"name": "Compensation d'injection bihoraire nuit"
+			},
+			"injectionSingle": {
+				"name": "Compensation d'injection"
+			},
+			"single": {
+				"name": "Compteur simple"
+			},
+			"singleDay": {
+				"name": "Compteur simple jour"
+			}
+		}
+	}
+}
