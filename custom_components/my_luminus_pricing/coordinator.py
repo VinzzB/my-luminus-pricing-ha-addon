@@ -96,12 +96,16 @@ class LuminusCoordinator(DataUpdateCoordinator):
             #_LOGGER.warning('updated coordinator data', data)  
         except APIConnectionError as err:
             _LOGGER.error(err)
-            raise UpdateFailed(err) from err
+            return self.data                            
+            #raise UpdateFailed(err) from err
         except Exception as err:
+            _LOGGER.error(err)
+            return self.data                             
             # This will show entities as unavailable by raising UpdateFailed exception
-            raise UpdateFailed(f"Error communicating with API: {err}") from err
+            #raise UpdateFailed(f"Error communicating with API: {err}") from err
 
         # What is returned here is stored in self.data by the DataUpdateCoordinator
+        self.data = data;                 
         return data
 
     # ----------------------------------------------------------------------------

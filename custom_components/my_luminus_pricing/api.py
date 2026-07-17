@@ -23,7 +23,7 @@ MOCK_DATA_METERS = {
             'energyType': 'Electricity', 
             'sources': [{'sourceProvider': 'SAP'}, {'sourceProvider': 'BasicMonitoring', 'status': 'Eligible'}]
         },{
-            'ean': MOCK_EAN_ELECTRICITY, 
+            'ean': MOCK_EAN_SEASONAL_ELECTRICITY, 
             'energyType': 'Electricity (Seasonal)',
             'sources': [{'sourceProvider': 'SAP'}, {'sourceProvider': 'BasicMonitoring', 'status': 'NonEligible'}]
         }, {
