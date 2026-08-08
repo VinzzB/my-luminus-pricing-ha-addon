@@ -1,6 +1,6 @@
 """DataUpdateCoordinator for our integration."""
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -29,6 +29,7 @@ class LuminusCoordinator(DataUpdateCoordinator):
         # Set variables from values entered in config flow setup
         self.user = config_entry.data[CONF_USERNAME]
         self.pwd = config_entry.data[CONF_PASSWORD]
+        self.config_data = config_entry.data
 
         # set variables from options.  You need a default here in case options have not been set
         self.poll_interval = config_entry.options.get(
@@ -74,39 +75,55 @@ class LuminusCoordinator(DataUpdateCoordinator):
                     seasonal_prices = meter_details.get('seasonalPrices', {})
                     prices = meter_details.get('prices', {})
                     product_name = meter_details['productName']
+                    default_meter_type = "seasonal" if seasonal_prices else meter_details.get('activeMeterType')
+                    meter_type = self.config_data.get(ean_nbr) or default_meter_type
                     
-                    if seasonal_prices:
-                        meter_prices = seasonal_prices
-                    else:
-                        meterType = meter_details['activeMeterType']
-                        meter_prices = prices[meterType]
-                    
-                    device = {
-                        'device_id': ean_nbr,
-                        'device_name': f'{product_name} ({ean_nbr})',
-                        'device_type': energy_type,
-                        'product_name': product_name
-                    }
+                    if meter_type == "seasonal" and seasonal_prices:
+                        prices["seasonal"] = seasonal_prices
+                        
+                    meter_prices = prices[meter_type]
+                    device = self.create_device(ean_nbr, product_name, energy_type, meter_type, meter_prices)
                     data.append(device)
-                    for propName, price in meter_prices.items():
-                        device[propName] = price['rate'] / (1 if propName == 'fixed' else 100)
                     
             #await self.hass.async_add_executor_job(self.api.logout)
             _LOGGER.info('Data updated.')
-            #_LOGGER.warning('updated coordinator data', data)  
+            
         except APIConnectionError as err:
-            _LOGGER.error(err)
-            return self.data                            
-            #raise UpdateFailed(err) from err
+            
+            if self.data is None:
+                _LOGGER.error(err)
+                raise UpdateFailed(err) from err
+            else:
+                _LOGGER.warning('Could not fetch data from Luminus API.', data)  
+                return self.data                            
+            #
         except Exception as err:
-            _LOGGER.error(err)
-            return self.data                             
-            # This will show entities as unavailable by raising UpdateFailed exception
-            #raise UpdateFailed(f"Error communicating with API: {err}") from err
-
+            if self.data is None:
+                # This will show entities as unavailable by raising UpdateFailed exception
+                _LOGGER.error(err)
+                raise UpdateFailed(f"Error communicating with API: {err}") from err
+            else:
+                _LOGGER.warning('Could not fetch data from Luminus API.', data)  
+                return self.data                             
+            
         # What is returned here is stored in self.data by the DataUpdateCoordinator
-        self.data = data;                 
+        self.data = data
         return data
+    
+    def create_device(self, ean_nbr: str, product_name: str, energy_type: str, meter_type: str, meter_prices: dict[str, Any]) -> dict[str, Any]:
+        device = {
+            'device_id': ean_nbr,
+            'device_name': f'{product_name} {meter_type} ({ean_nbr})',
+            'device_type': energy_type,
+            'product_name': product_name,
+            'ean': ean_nbr,
+            'last_update': datetime.now(),
+            'meter_type': meter_type
+        }
+        for propName, price in meter_prices.items():
+            device[propName] = price['rate'] / (1 if propName == 'fixed' else 100)
+        
+        return device
 
     # ----------------------------------------------------------------------------
     # Here we add some custom functions on our data coordinator to be called

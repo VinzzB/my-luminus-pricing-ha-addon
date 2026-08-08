@@ -40,14 +40,15 @@ async def async_setup_entry(
     # ----------------------------------------------------------------------------
 
     sensors = []
-    skipProps = ['device_id', 'device_name', 'device_type', 'product_name']
+    skipProps = ['device_id', 'device_name', 'device_type', 'product_name', 'ean', 'meter_type', 'last_update']
     for device in coordinator.data:
         sensors.append(LuminusBaseSensor(coordinator, device, 'product_name'))
+        sensors.append(DateTimeSensor(coordinator, device, 'last_update'))
         for propName, price in device.items():
             # Skip meta properties
             if(propName in skipProps):
                 continue
-            
+
             sensorType = YearlyPriceSensor if propName == 'fixed' else EnergyPriceSensor
             sensors.append(sensorType(coordinator, device, propName))
 
@@ -67,18 +68,24 @@ class LuminusBaseSensor(LuminusBaseEntity, SensorEntity):
 #class ProductNameSensor(LuminusBaseSensor)
 
 
+class DateTimeSensor(LuminusBaseSensor):
+
+    _attr_state_class  = None
+    _attr_device_class = SensorDeviceClass.DATE 
+    
+    
 class YearlyPriceSensor(LuminusBaseSensor):
 
     _attr_state_class  = SensorStateClass.MEASUREMENT
-    _attr_device_class = SensorDeviceClass.MONETARY
+    _attr_device_class = None 
     _attr_native_unit_of_measurement = 'EUR/year'
     _attr_suggested_display_precision = 2
-
+    _attr_icon = "mdi:cash"
 
 class EnergyPriceSensor(LuminusBaseSensor):
 
     _attr_state_class  = SensorStateClass.MEASUREMENT
-    _attr_device_class = SensorDeviceClass.MONETARY
+    _attr_device_class = None 
     _attr_native_unit_of_measurement = 'EUR/kWh'
     _attr_suggested_display_precision = 4
-
+    _attr_icon = "mdi:cash"

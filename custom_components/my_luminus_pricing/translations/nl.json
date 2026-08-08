@@ -21,10 +21,12 @@
 				}
 			},
 			"reconfigure": {
-				"data": {
-					"password": "Wachtwoord",
-					"username": "Gebruikersnaam (e-mail)"
-				}
+				"title": "Selecteer tarieven",
+				"description": "Selecteer een tafief voor elk EAN nummer."
+			},
+			"settings": {
+				"title": "Selecteer tarieven",
+				"description": "Selecteer een tarief voor elk EAN nummer."
 			}
 		}
 	},
@@ -77,7 +79,21 @@
 			},
 			"singleDay": {
 				"name": "Enkelvoudige meter dag"
+			},
+			"last_update": {
+				"name": "Bijgewerkt op"
 			}
 		}
-	}
+	},
+  "selector": {
+    "meter_type_selector": {
+	  "options": {
+        "dual": "Tweevoudig",
+        "single": "Enkelvoudig",
+        "seasonal": "Seizoensgebonden",
+		"dualExclusiveNight": "Tweevoudig exclusief nacht",
+		"singleExclusiveNight": "Enkelvoudig exclusief nacht"
+      }
+    }
+  }
 }

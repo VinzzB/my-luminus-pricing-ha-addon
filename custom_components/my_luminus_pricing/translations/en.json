@@ -21,10 +21,12 @@
 				}
 			},
 			"reconfigure": {
-				"data": {
-					"password": "Password",
-					"username": "Username"
-				}
+				"title": "Select meter rates",
+				"description": "Select a rate for each EAN number."
+			},
+			"settings": {
+				"title": "Select meter rate",
+				"description": "Select a rate for each EAN number."
 			}
 		}
 	},
@@ -77,7 +79,21 @@
 			},
 			"singleDay": {
 				"name": "Single day"
+			},
+			"last_update": {
+				"name": "Last update"
 			}
 		}
-	}
+	},
+  "selector": {
+    "meter_type_selector": {
+	  "options": {
+        "dual": "Dual",
+        "single": "Single",
+        "seasonal": "Seasonal",
+		"dualExclusiveNight": "Dual exclusive night",
+		"singleExclusiveNight": "Single exclusive night"
+      }
+    }
+  }
 }
