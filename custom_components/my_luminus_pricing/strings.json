@@ -35,31 +35,31 @@
 	  "product_name": { 
 		"name": "Name of product" 
 	  },
-	  "dualDay": { 
+	  "dual_day": { 
 		"name": "Dual day" 
 	  },
-	  "dualNight": { 
+	  "dual_night": { 
 		"name": "Dual night" 
 	  },
-	  "exclusiveNight": { 
+	  "exclusive_night": { 
 		"name": "Exclusive night" 
 	  },
 	  "fixed": { 
 		"name": "Fixed" 
 	  },
-	  "injectionDualDay": { 
+	  "injection_dual_day": { 
 		"name": "Injection dual day" 
 	  },
-	  "injectionDualNight": { 
+	  "injection_dual_night": { 
 		"name": "Injection dual night" 
 	  },
-	  "injectionSingle": { 
+	  "injection_single": { 
 		"name": "Injection single" 
 	  },
 	  "single": { 
 		"name": "Single" 
 	  },
-	  "singleDay": { 
+	  "single_day": { 
 		"name": "Single day" 
 	  },
 	  "last_update": {
