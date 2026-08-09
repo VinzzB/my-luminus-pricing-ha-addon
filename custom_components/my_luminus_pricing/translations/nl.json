@@ -33,13 +33,13 @@
 			"product_name": {
 				"name": "Productnaam"
 			},
-			"dualDay": {
+			"dual_day": {
 				"name": "Tweevoudige meter dag"
 			},
-			"dualNight": {
+			"dual_night": {
 				"name": "Tweevoudige meter nacht"
 			},
-			"exclusiveNight": {
+			"exclusive_night": {
 				"name": "Exclusief nachtmeter"
 			},
 			"fixed": {
@@ -48,34 +48,34 @@
 			"peak": {
 				"name": "Piekuren"
 			},
-			"offPeak": {
+			"off_peak": {
 				"name": "Daluren"
 			},
-			"superOffPeak": {
+			"super_off_peak": {
 				"name": "Super daluren"
 			},
-			"injectionPeak": {
+			"injection_peak": {
 				"name": "Vergoeding geïnjecteerde energie piekuren"
 			},
-			"injectionOffPeak": {
+			"injection_off_peak": {
 				"name": "Vergoeding geïnjecteerde energie daluren"
 			},
-			"injectionSuperOffPeak": {
+			"injection_super_off_peak": {
 				"name": "Vergoeding geïnjecteerde energie super daluren"
 			},
-			"injectionDualDay": {
+			"injection_dual_day": {
 				"name": "Vergoeding geïnjecteerde energie dag"
 			},
-			"injectionDualNight": {
+			"injection_dual_night": {
 				"name": "Vergoeding geïnjecteerde energie nacht"
 			},
-			"injectionSingle": {
+			"injection_single": {
 				"name": "Vergoeding geïnjecteerde energie"
 			},
 			"single": {
 				"name": "Enkelvoudige meter"
 			},
-			"singleDay": {
+			"single_day": {
 				"name": "Enkelvoudige meter dag"
 			}
 		}

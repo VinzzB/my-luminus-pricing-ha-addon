@@ -33,13 +33,13 @@
 			"product_name": {
 				"name": "Nom du produit"
 			},
-			"dualDay": {
+			"dual_day": {
 				"name": "Compteur bihoraire jour"
 			},
-			"dualNight": {
+			"dual_night": {
 				"name": "Compteur bihoraire nuit"
 			},
-			"exclusiveNight": {
+			"exclusive_night": {
 				"name": "Compteur exclusif nuit"
 			},
 			"fixed": {
@@ -48,34 +48,34 @@
 			"peak": {
 				"name": "Heures pleines"
 			},
-			"offPeak": {
+			"off_peak": {
 				"name": "Heures creuses"
 			},
-			"superOffPeak": {
+			"super_off_peak": {
 				"name": "Super heures creuses"
 			},
-			"injectionPeak": {
+			"injection_peak": {
 				"name": "Compensation d'injection heures pleines"
 			},
-			"injectionOffPeak": {
+			"injection_off_peak": {
 				"name": "Compensation d'injection heures creuses"
 			},
-			"injectionSuperOffPeak": {
+			"injection_super_off_peak": {
 				"name": "Compensation d'injection super heures creuses"
 			},
-			"injectionDualDay": {
+			"injection_dual_day": {
 				"name": "Compensation d'injection bihoraire jour"
 			},
-			"injectionDualNight": {
+			"injection_dual_night": {
 				"name": "Compensation d'injection bihoraire nuit"
 			},
-			"injectionSingle": {
+			"injection_single": {
 				"name": "Compensation d'injection"
 			},
 			"single": {
 				"name": "Compteur simple"
 			},
-			"singleDay": {
+			"single_day": {
 				"name": "Compteur simple jour"
 			}
 		}
