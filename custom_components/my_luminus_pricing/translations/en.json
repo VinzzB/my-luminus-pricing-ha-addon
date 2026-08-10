@@ -91,8 +91,8 @@
         "dual": "Dual",
         "single": "Single",
         "seasonal": "Seasonal",
-		"dualExclusiveNight": "Dual exclusive night",
-		"singleExclusiveNight": "Single exclusive night"
+		"dual_exclusive_night": "Dual exclusive night",
+		"single_exclusive_night": "Single exclusive night"
       }
     }
   }

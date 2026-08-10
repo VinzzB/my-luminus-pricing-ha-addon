@@ -19,7 +19,6 @@ from .utils import camel_to_snake_case
 from .const import DOMAIN
 from .coordinator import LuminusCoordinator
 import logging
-import re
 
 _LOGGER = logging.getLogger(__name__)
 

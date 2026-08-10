@@ -100,16 +100,16 @@ async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-async def async_remove_config_entry_device(
-    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: DeviceEntry
-) -> bool:
-    """Delete device if selected from UI.
+# async def async_remove_config_entry_device(
+    # hass: HomeAssistant, config_entry: ConfigEntry, device_entry: DeviceEntry
+# ) -> bool:
+    # """Delete device if selected from UI.
 
-    Adding this function shows the delete device option in the UI.
-    Remove this function if you do not want that option.
-    You may need to do some checks here before allowing devices to be removed.
-    """
-    return True
+    # Adding this function shows the delete device option in the UI.
+    # Remove this function if you do not want that option.
+    # You may need to do some checks here before allowing devices to be removed.
+    # """
+    # return True
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: MyConfigEntry) -> bool:

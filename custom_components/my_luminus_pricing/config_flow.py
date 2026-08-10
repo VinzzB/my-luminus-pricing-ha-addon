@@ -24,6 +24,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.selector import selector
 
+from .utils import camel_to_snake_case
 from .api import API, APIAuthError, APIConnectionError
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, MIN_SCAN_INTERVAL, USE_MOCK_DATA
 import logging
@@ -68,14 +69,15 @@ async def validate_settings(hass: HomeAssistant, data: dict[str, Any]) -> bool:
     return True
 
 
-class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
+class LuminusConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Example Integration."""
 
     VERSION = 1
     MINOR_VERSION = 2
-    _input_data: dict[str, Any]
-    _title: str
-    _reconfigure_flow: bool
+    def __init__(self):
+        _input_data: dict[str, Any]
+        _title: str
+        _reconfigure_flow: bool = False
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -118,7 +120,7 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
                 # Set our title variable here for use later
                 self._title = info["title"]
                 self._api = info["api"]
-
+                self._reconfigure_flow = False
                 # ----------------------------------------------------------------------------
                 # You need to save the input data to a class variable as you go through each step
                 # to ensure it is accessible across all steps.
@@ -159,6 +161,13 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
                 # ----------------------------------------------------------------------------
                 # Validation was successful, so create the config entry.
                 # ----------------------------------------------------------------------------
+                
+                #Convert dropdown selections back to camel case for use in tariff selection (json key).
+                for meter in self.meters:
+                    ean_nbr = meter['ean']
+                    option = user_input[ean_nbr]
+                    user_input[ean_nbr] = meter['meter_types'][option]
+                    
                 if self._reconfigure_flow:
                     config_entry = self.hass.config_entries.async_get_entry(
                         self.context["entry_id"]
@@ -185,6 +194,7 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
         
         dynamic_fields = {}
         meters = await self.hass.async_add_executor_job(self._api.get_meters)
+        self.meters = meters['meters']
         for meter in meters['meters']:
             ean_nbr = meter['ean']
             energy_type = meter['energyType']
@@ -196,23 +206,24 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
             
             product_name = meter_details['productName']
             defaultMeterType = self._input_data.get(ean_nbr) or ('seasonal' if seasonal_prices else meter_details.get('activeMeterType'))
-            meter_types = []
+            #Convert to snake case for HACS translation keys.
+            meter_types = {}
             for meter_type, meter_prices in prices.items():
-                meter_types.append(meter_type)
-            dynamic_fields[vol.Required(ean_nbr, default=defaultMeterType)] = selector({
+                meter_type_sc = camel_to_snake_case(meter_type)
+                meter_types[meter_type_sc] = meter_type
+            meter['meter_types'] = meter_types
+            dynamic_fields[vol.Required(ean_nbr, default=camel_to_snake_case(defaultMeterType))] = selector({
                 "select": {
-                    "options": meter_types,
+                    "options": list(meter_types.keys()),
                     "mode": "dropdown",
                     "sort": True,
                     "translation_key": "meter_type_selector"
                 }
             })
         
-        dynamic_schema = vol.Schema(dynamic_fields)           
-       
         return self.async_show_form(
             step_id="settings",
-            data_schema=dynamic_schema,
+            data_schema=vol.Schema(dynamic_fields),
             errors=errors,
             last_step=True,
         )
