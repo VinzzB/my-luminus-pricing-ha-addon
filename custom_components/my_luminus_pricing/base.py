@@ -15,6 +15,7 @@ from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .utils import camel_to_snake_case
 from .const import DOMAIN
 from .coordinator import LuminusCoordinator
 import logging
@@ -49,7 +50,7 @@ class LuminusBaseEntity(CoordinatorEntity):
         self.device = device
         self.device_id = device["device_id"]
         self.parameter = parameter
-        self.translation_key = self.camel_to_snake_case(parameter)
+        self.translation_key = camel_to_snake_case(parameter)
         #self._translation_key = parameter
 
     @callback
@@ -64,17 +65,6 @@ class LuminusBaseEntity(CoordinatorEntity):
         )
         self.async_write_ha_state()
 
-    # @property
-    # def translation_key(self):
-        # return self.camel_to_snake_case(self.parameter)
-
-    def camel_to_snake_case(self, text: str) -> str:
-        """Zet CamelCase om naar snake_case."""
-        # Voegt een underscore toe voor elke hoofdletter die volgt op een kleine letter
-        str1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', text)
-        # Behandelt opeenvolgende hoofdletters (zoals HTTPResponse -> http_response)
-        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', str1).lower()        
-        
     @property
     def device_info(self) -> DeviceInfo:
         """Return device information."""
