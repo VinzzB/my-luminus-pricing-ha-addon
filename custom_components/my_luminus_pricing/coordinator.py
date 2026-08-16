@@ -94,7 +94,7 @@ class LuminusCoordinator(DataUpdateCoordinator):
                 _LOGGER.error(err)
                 raise UpdateFailed(err) from err
             else:
-                _LOGGER.warning('Could not fetch data from Luminus API.', data)  
+                _LOGGER.warning('Could not fetch data from Luminus API.')  
                 return self.data                            
             #
         except Exception as err:
@@ -103,7 +103,7 @@ class LuminusCoordinator(DataUpdateCoordinator):
                 _LOGGER.error(err)
                 raise UpdateFailed(f"Error communicating with API: {err}") from err
             else:
-                _LOGGER.warning('Could not fetch data from Luminus API.', data)  
+                _LOGGER.warning('Could not fetch data from Luminus API.')  
                 return self.data                             
             
         # What is returned here is stored in self.data by the DataUpdateCoordinator
