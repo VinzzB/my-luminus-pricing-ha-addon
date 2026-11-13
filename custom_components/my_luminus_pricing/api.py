@@ -167,7 +167,7 @@ class API:
     def get_data(self, url: str) -> list[dict[str, Any]]:
         try:
             r = self.session.get(url, timeout=HTTP_TIMEOUT, allow_redirects=False)
-            if(r.status_code == requests.codes.forbidden):
+            if(r.status_code == requests.codes.forbidden or r.status_code == requests.codes.unauthorized):
                 self.isLoggedIn = False
                 self.login()
                 r = self.session.get(url, timeout=HTTP_TIMEOUT, allow_redirects=False)
@@ -178,8 +178,10 @@ class API:
                 raise APIConnectionError("Error connecting to api")
             return r.json()
         except requests.exceptions.ConnectTimeout as err:
+            self.isLoggedIn = False
             raise APIConnectionError("Timeout connecting to api") from err
         except Exception as err:
+            self.isLoggedIn = False
             raise APIConnectionError(err)
         
     def login(self):
@@ -225,10 +227,8 @@ class API:
         # A successful POST login request can  result in a 500 statuscode when redirecting to https://www.luminus.be/myluminus/nl. Check account overview for login state.
         authReq = self.session.post('https://login.luminus.be/u/login/password', params=authUriQry, data=authReqBody, timeout=30, headers=authHeaders)
         
-        overviewReq = self.session.get('https://www.luminus.be/myluminus/api/account/overview')
-        
-        self.isLoggedIn = overviewReq.status_code == requests.codes.ok
-        if(overviewReq.status_code != requests.codes.ok):
+        self.isLoggedIn = authReq.status_code == requests.codes.ok
+        if(not self.isLoggedIn):
             raise APIAuthError()
             
         

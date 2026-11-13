@@ -11,7 +11,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import DOMAIN, HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
+from homeassistant.util import dt
 from .api import API, APIConnectionError
 from .const import DEFAULT_SCAN_INTERVAL, USE_MOCK_DATA
 import logging
@@ -117,7 +117,7 @@ class LuminusCoordinator(DataUpdateCoordinator):
             'device_type': energy_type,
             'product_name': product_name,
             'ean': ean_nbr,
-            'last_update': datetime.now(),
+            'last_update': dt.utcnow(),
             'meter_type': meter_type
         }
         for propName, price in meter_prices.items():

@@ -71,7 +71,7 @@ class LuminusBaseSensor(LuminusBaseEntity, SensorEntity):
 class DateTimeSensor(LuminusBaseSensor):
 
     _attr_state_class  = None
-    _attr_device_class = SensorDeviceClass.DATE 
+    _attr_device_class = SensorDeviceClass.TIMESTAMP 
     
     
 class YearlyPriceSensor(LuminusBaseSensor):
